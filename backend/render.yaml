@@ -1,0 +1,41 @@
+services:
+  # Backend API Service
+  - type: web
+    name: inventory-management-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: FRONTEND_URL
+        value: https://inventory-management-system.vercel.app
+    autoDeploy: yes
+    
+databases:
+  # MongoDB Database
+  - name: inventory-management-db
+    plan: free
+    databaseName: inventory-management
+    ipAllowList: []
+    
+# Build hooks for deployment
+buildHooks:
+  - name: Production Deploy
+    type: deploy
+    branch: main
+    
+# Custom domains
+domains:
+  - domain: api.inventorypro.com
+    type: primary
