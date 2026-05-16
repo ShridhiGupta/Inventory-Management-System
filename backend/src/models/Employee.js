@@ -1,15 +1,25 @@
 const mongoose = require('mongoose');
 
 const employeeSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    unique: true,
+    sparse: true,
+    trim: true
+  },
+  fullName: {
+    type: String,
+    required: [true, 'Full name is required'],
+    trim: true,
+    maxlength: [100, 'Full name cannot exceed 100 characters']
+  },
   firstName: {
     type: String,
-    required: [true, 'First name is required'],
     trim: true,
     maxlength: [50, 'First name cannot exceed 50 characters']
   },
   lastName: {
     type: String,
-    required: [true, 'Last name is required'],
     trim: true,
     maxlength: [50, 'Last name cannot exceed 50 characters']
   },
@@ -35,11 +45,13 @@ const employeeSchema = new mongoose.Schema({
   role: {
     type: String,
     required: [true, 'Role is required'],
-    enum: ['SUPER_ADMIN', 'STORE_ADMIN', 'VENDOR_ADMIN', 'TRANSACTION_ADMIN', 'STORE_MANAGER', 'WAREHOUSE_MANAGER', 'SALES_ASSOCIATE', 'CASHIER']
+    enum: [
+      'SUPER_ADMIN', 'ADMIN', 'MANAGER', 'STAFF', 'HR', 'CASHIER', 
+      'STORE_ADMIN', 'VENDOR_ADMIN', 'TRANSACTION_ADMIN', 'STORE_MANAGER', 'WAREHOUSE_MANAGER', 'SALES_ASSOCIATE'
+    ]
   },
   position: {
     type: String,
-    required: [true, 'Position is required'],
     trim: true,
     maxlength: [100, 'Position cannot exceed 100 characters']
   },
@@ -50,13 +62,39 @@ const employeeSchema = new mongoose.Schema({
   },
   hireDate: {
     type: Date,
-    required: [true, 'Hire date is required'],
+    default: Date.now
+  },
+  joiningDate: {
+    type: Date,
     default: Date.now
   },
   salary: {
     type: Number,
-    required: [true, 'Salary is required'],
     min: [0, 'Salary cannot be negative']
+  },
+  employeeCode: {
+    type: String,
+    unique: true,
+    sparse: true,
+    trim: true
+  },
+  employeeType: {
+    type: String,
+    enum: ['FULL_TIME', 'PART_TIME', 'CONTRACT', 'PAYROLL', 'INTERN'],
+    default: 'FULL_TIME'
+  },
+  contractorName: {
+    type: String,
+    trim: true
+  },
+  status: {
+    type: String,
+    enum: ['ACTIVE', 'INACTIVE', 'SUSPENDED'],
+    default: 'ACTIVE'
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
   storeId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -142,9 +180,14 @@ employeeSchema.index({ warehouseId: 1 });
 employeeSchema.index({ vendorId: 1 });
 employeeSchema.index({ isActive: 1 });
 
-// Virtual for full name
-employeeSchema.virtual('fullName').get(function() {
-  return `${this.firstName} ${this.lastName}`;
+// Pre-validate middleware to populate firstName/lastName from fullName
+employeeSchema.pre('validate', function(next) {
+  if (this.fullName && (!this.firstName || !this.lastName)) {
+    const parts = this.fullName.trim().split(' ');
+    this.firstName = parts[0];
+    this.lastName = parts.length > 1 ? parts.slice(1).join(' ') : parts[0];
+  }
+  next();
 });
 
 // Pre-save middleware to hash password if this is used for authentication

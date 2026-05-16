@@ -98,7 +98,7 @@ function App() {
         <Route index element={<Navigate to="/home" replace />} />
 
         <Route path="home" element={<Home user={user} />} />
-        <Route path="catalog" element={<Catalog user={user} />} />
+        <Route path="catalog/*" element={<Catalog user={user} />} />
         <Route path="inventory" element={<Inventory user={user} />} />
         <Route path="inventory/locations" element={<InventoryLocations user={user} />} />
         <Route path="purchase" element={<Purchase user={user} />} />

@@ -2,17 +2,40 @@ const { body } = require('express-validator');
 
 // Create employee validation
 const createEmployeeValidation = [
-  body('firstName')
+  body('fullName')
     .trim()
     .notEmpty()
-    .withMessage('First name is required')
+    .withMessage('Full name is required')
+    .isLength({ max: 100 })
+    .withMessage('Full name cannot exceed 100 characters'),
+
+  body('username')
+    .optional()
+    .trim(),
+
+  body('employeeCode')
+    .optional()
+    .trim(),
+
+  body('employeeType')
+    .optional()
+    .isIn(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'PAYROLL', 'INTERN'])
+    .withMessage('Invalid employee type'),
+
+  body('status')
+    .optional()
+    .isIn(['ACTIVE', 'INACTIVE', 'SUSPENDED'])
+    .withMessage('Invalid status'),
+
+  body('firstName')
+    .optional()
+    .trim()
     .isLength({ max: 50 })
     .withMessage('First name cannot exceed 50 characters'),
   
   body('lastName')
+    .optional()
     .trim()
-    .notEmpty()
-    .withMessage('Last name is required')
     .isLength({ max: 50 })
     .withMessage('Last name cannot exceed 50 characters'),
   
@@ -30,13 +53,15 @@ const createEmployeeValidation = [
     .withMessage('Please enter a valid phone number'),
   
   body('role')
-    .isIn(['SUPER_ADMIN', 'STORE_ADMIN', 'VENDOR_ADMIN', 'TRANSACTION_ADMIN', 'STORE_MANAGER', 'WAREHOUSE_MANAGER', 'SALES_ASSOCIATE', 'CASHIER'])
+    .isIn([
+      'SUPER_ADMIN', 'ADMIN', 'MANAGER', 'STAFF', 'HR', 'CASHIER',
+      'STORE_ADMIN', 'VENDOR_ADMIN', 'TRANSACTION_ADMIN', 'STORE_MANAGER', 'WAREHOUSE_MANAGER', 'SALES_ASSOCIATE'
+    ])
     .withMessage('Invalid role'),
   
   body('position')
+    .optional()
     .trim()
-    .notEmpty()
-    .withMessage('Position is required')
     .isLength({ max: 100 })
     .withMessage('Position cannot exceed 100 characters'),
   
@@ -46,10 +71,17 @@ const createEmployeeValidation = [
     .withMessage('Invalid department'),
   
   body('hireDate')
+    .optional()
     .isISO8601()
     .withMessage('Please enter a valid hire date'),
   
+  body('joiningDate')
+    .optional()
+    .isISO8601()
+    .withMessage('Please enter a valid joining date'),
+  
   body('salary')
+    .optional()
     .isFloat({ min: 0 })
     .withMessage('Salary must be a non-negative number'),
   
@@ -114,19 +146,41 @@ const createEmployeeValidation = [
 
 // Update employee validation
 const updateEmployeeValidation = [
-  body('firstName')
+  body('fullName')
     .optional()
     .trim()
     .notEmpty()
-    .withMessage('First name cannot be empty')
+    .withMessage('Full name cannot be empty')
+    .isLength({ max: 100 })
+    .withMessage('Full name cannot exceed 100 characters'),
+
+  body('username')
+    .optional()
+    .trim(),
+
+  body('employeeCode')
+    .optional()
+    .trim(),
+
+  body('employeeType')
+    .optional()
+    .isIn(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'PAYROLL', 'INTERN'])
+    .withMessage('Invalid employee type'),
+
+  body('status')
+    .optional()
+    .isIn(['ACTIVE', 'INACTIVE', 'SUSPENDED'])
+    .withMessage('Invalid status'),
+
+  body('firstName')
+    .optional()
+    .trim()
     .isLength({ max: 50 })
     .withMessage('First name cannot exceed 50 characters'),
   
   body('lastName')
     .optional()
     .trim()
-    .notEmpty()
-    .withMessage('Last name cannot be empty')
     .isLength({ max: 50 })
     .withMessage('Last name cannot exceed 50 characters'),
   
@@ -145,14 +199,15 @@ const updateEmployeeValidation = [
   
   body('role')
     .optional()
-    .isIn(['SUPER_ADMIN', 'STORE_ADMIN', 'VENDOR_ADMIN', 'TRANSACTION_ADMIN', 'STORE_MANAGER', 'WAREHOUSE_MANAGER', 'SALES_ASSOCIATE', 'CASHIER'])
+    .isIn([
+      'SUPER_ADMIN', 'ADMIN', 'MANAGER', 'STAFF', 'HR', 'CASHIER',
+      'STORE_ADMIN', 'VENDOR_ADMIN', 'TRANSACTION_ADMIN', 'STORE_MANAGER', 'WAREHOUSE_MANAGER', 'SALES_ASSOCIATE'
+    ])
     .withMessage('Invalid role'),
   
   body('position')
     .optional()
     .trim()
-    .notEmpty()
-    .withMessage('Position cannot be empty')
     .isLength({ max: 100 })
     .withMessage('Position cannot exceed 100 characters'),
   

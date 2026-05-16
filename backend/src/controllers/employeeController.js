@@ -9,17 +9,19 @@ const getAllEmployees = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
     
-    const { search, role, department, storeId, warehouseId, isActive } = req.query;
+    const { search, role, department, storeId, warehouseId, isActive, employeeType, status } = req.query;
     
     // Build filter
     let filter = {};
     
     if (search) {
       filter.$or = [
+        { fullName: { $regex: search, $options: 'i' } },
         { firstName: { $regex: search, $options: 'i' } },
         { lastName: { $regex: search, $options: 'i' } },
         { email: { $regex: search, $options: 'i' } },
-        { position: { $regex: search, $options: 'i' } }
+        { employeeCode: { $regex: search, $options: 'i' } },
+        { username: { $regex: search, $options: 'i' } }
       ];
     }
     
@@ -42,21 +44,49 @@ const getAllEmployees = async (req, res) => {
     if (isActive !== undefined) {
       filter.isActive = isActive === 'true';
     }
+
+    if (employeeType) {
+      filter.employeeType = employeeType;
+    }
+
+    if (status) {
+      filter.status = status;
+    }
     
     const employees = await Employee.find(filter)
       .populate('storeId', 'name code')
       .populate('warehouseId', 'name code')
       .populate('vendorId', 'name')
-      .populate('manager', 'firstName lastName email')
+      .populate('manager', 'fullName firstName lastName email')
+      .populate('createdBy', 'firstName lastName email')
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
     
     const total = await Employee.countDocuments(filter);
+
+    // Dashboard Statistics
+    const totalEmployees = await Employee.countDocuments({});
+    const activeEmployees = await Employee.countDocuments({ status: 'ACTIVE' });
+    const inactiveEmployees = await Employee.countDocuments({ status: { $in: ['INACTIVE', 'SUSPENDED'] } });
+    
+    const departmentCountsRaw = await Employee.aggregate([
+      { $group: { _id: '$department', count: { $sum: 1 } } }
+    ]);
+    const departmentCounts = departmentCountsRaw.reduce((acc, curr) => {
+      acc[curr._id || 'UNASSIGNED'] = curr.count;
+      return acc;
+    }, {});
     
     res.json({
       message: 'Employees retrieved successfully',
       employees,
+      dashboardStats: {
+        totalEmployees,
+        activeEmployees,
+        inactiveEmployees,
+        departmentCounts
+      },
       pagination: {
         page,
         limit,
@@ -79,8 +109,9 @@ const getEmployee = async (req, res) => {
       .populate('storeId', 'name code address')
       .populate('warehouseId', 'name code address')
       .populate('vendorId', 'name address')
-      .populate('manager', 'firstName lastName email position')
-      .populate('reports', 'firstName lastName email position');
+      .populate('manager', 'fullName firstName lastName email position')
+      .populate('reports', 'fullName firstName lastName email position')
+      .populate('createdBy', 'firstName lastName email');
     
     if (!employee) {
       return res.status(404).json({ message: 'Employee not found' });
@@ -115,6 +146,10 @@ const createEmployee = async (req, res) => {
       return res.status(400).json({ message: 'Employee with this email already exists' });
     }
     
+    if (req.user) {
+      employeeData.createdBy = req.user._id;
+    }
+    
     // Create employee
     const employee = new Employee(employeeData);
     await employee.save();
@@ -123,7 +158,7 @@ const createEmployee = async (req, res) => {
       .populate('storeId', 'name code')
       .populate('warehouseId', 'name code')
       .populate('vendorId', 'name')
-      .populate('manager', 'firstName lastName email');
+      .populate('manager', 'fullName firstName lastName email');
     
     res.status(201).json({
       message: 'Employee created successfully',
@@ -167,7 +202,7 @@ const updateEmployee = async (req, res) => {
     ).populate('storeId', 'name code')
      .populate('warehouseId', 'name code')
      .populate('vendorId', 'name')
-     .populate('manager', 'firstName lastName email');
+     .populate('manager', 'fullName firstName lastName email');
     
     if (!employee) {
       return res.status(404).json({ message: 'Employee not found' });
@@ -190,7 +225,7 @@ const deleteEmployee = async (req, res) => {
     
     const employee = await Employee.findByIdAndUpdate(
       id,
-      { isActive: false },
+      { isActive: false, status: 'INACTIVE' },
       { new: true }
     );
     
