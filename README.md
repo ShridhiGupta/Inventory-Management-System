@@ -2,7 +2,7 @@
 
 A comprehensive enterprise-grade Inventory, Warehouse, Vendor, Store, Billing, and Order Management System built with the MERN stack.
 
-## 🚀 Features
+## Features
 
 ### Core Modules
 - **Authentication System** - JWT-based authentication with Role-Based Access Control (RBAC)
@@ -25,7 +25,7 @@ A comprehensive enterprise-grade Inventory, Warehouse, Vendor, Store, Billing, a
 - **Payment Processing**: Multiple payment methods with status tracking
 - **Reporting**: Comprehensive analytics with export capabilities
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Frontend
 - **React.js** - UI framework with Vite for fast development
@@ -54,7 +54,7 @@ A comprehensive enterprise-grade Inventory, Warehouse, Vendor, Store, Billing, a
 - **Backend**: Render (Node.js hosting)
 - **Database**: MongoDB Atlas (Cloud database)
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 inventory-management-system/
@@ -95,7 +95,7 @@ inventory-management-system/
 └── README.md                # This file
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -152,7 +152,7 @@ VITE_APP_NAME=InventoryPro
 VITE_APP_VERSION=1.0.0
 ```
 
-## 📊 Database Schema
+## Database Schema
 
 ### Core Models
 - **User** - Authentication and role management
@@ -164,7 +164,7 @@ VITE_APP_VERSION=1.0.0
 - **Transaction** - All financial transactions
 - **Invoice** - Billing and payment records
 
-## 🎯 User Roles & Permissions
+## User Roles & Permissions
 
 ### SUPER_ADMIN
 - Full system access
@@ -192,7 +192,7 @@ VITE_APP_VERSION=1.0.0
 - Track order logs
 - Process refunds and returns
 
-## 🔧 Development
+## Development
 
 ### Available Scripts
 
@@ -263,7 +263,7 @@ The API follows RESTful conventions:
 - `POST /api/transaction/return` - Create return
 - `GET /api/transaction/analytics` - Get transaction analytics
 
-## 🚀 Deployment
+## Deployment
 
 ### Frontend (Vercel)
 1. Connect your GitHub repository to Vercel
@@ -281,7 +281,7 @@ The API follows RESTful conventions:
 3. Create database user with appropriate permissions
 4. Update environment variables with connection string
 
-## 🧪 Testing
+## Testing
 
 ### Running Tests
 ```bash
@@ -301,7 +301,7 @@ npm test
 - Data validation and sanitization
 - Error handling and edge cases
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -309,18 +309,18 @@ npm test
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## Support
 
 For support, please contact:
 - Email: support@inventorypro.com
 - Documentation: [docs.inventorypro.com](https://docs.inventorypro.com)
 - Issues: [GitHub Issues](https://github.com/your-repo/issues)
 
-## 🎉 Acknowledgments
+## Acknowledgments
 
 - Built with modern web technologies
 - Inspired by leading ERP systems
