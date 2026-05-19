@@ -326,3 +326,7 @@ For support, please contact:
 - Inspired by leading ERP systems
 - Designed for scalability and performance
 - Focused on user experience and accessibility
+
+
+
+By Shridhi Gupta
