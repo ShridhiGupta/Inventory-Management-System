@@ -321,12 +321,10 @@ const createProduct = async (req, res) => {
     const productData = req.body;
 
     // AI Duplicate Detection
-    const duplicateCheck = await CatalogProduct.findOne({
-      $or: [
-        { sku: productData.sku },
-        { barcode: productData.barcode }
-      ]
-    });
+    const duplicateFilters = [{ sku: productData.sku }];
+    if (productData.barcode) duplicateFilters.push({ barcode: productData.barcode });
+
+    const duplicateCheck = await CatalogProduct.findOne({ $or: duplicateFilters });
 
     if (duplicateCheck) {
       return res.status(400).json({
@@ -396,13 +394,13 @@ const updateProduct = async (req, res) => {
     const updateData = req.body;
 
     // Check for duplicates (excluding current product)
-    const duplicateCheck = await CatalogProduct.findOne({
-      _id: { $ne: id },
-      $or: [
-        { sku: updateData.sku },
-        { barcode: updateData.barcode }
-      ]
-    });
+    const duplicateFilters = [];
+    if (updateData.sku) duplicateFilters.push({ sku: updateData.sku });
+    if (updateData.barcode) duplicateFilters.push({ barcode: updateData.barcode });
+
+    const duplicateCheck = duplicateFilters.length > 0
+      ? await CatalogProduct.findOne({ _id: { $ne: id }, $or: duplicateFilters })
+      : null;
 
     if (duplicateCheck) {
       return res.status(400).json({

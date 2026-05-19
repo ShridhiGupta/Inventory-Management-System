@@ -107,7 +107,7 @@ function CatalogSidebar() {
                     {menu.children.map(child => (
                       <NavLink
                         key={child.path}
-                        to={child.path}
+                        to={`/catalog/${child.path}`}
                         className={({ isActive }) => cn(
                           "block px-3 py-2 text-sm rounded-lg transition-colors",
                           isActive 
@@ -123,7 +123,7 @@ function CatalogSidebar() {
               </>
             ) : (
               <NavLink
-                to={menu.path}
+                to={`/catalog/${menu.path}`}
                 className={({ isActive }) => cn(
                   "flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg transition-colors",
                   isActive 

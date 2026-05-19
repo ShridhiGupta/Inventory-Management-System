@@ -5,6 +5,7 @@ import {
   CheckCircle, Lightbulb, TrendingUp, AlertTriangle
 } from 'lucide-react';
 import api from '../../lib/api';
+import ProductFormModal from './products/ProductFormModal';
 
 export default function CatalogDashboard({ user }) {
   const [data, setData] = useState(null);
@@ -12,6 +13,7 @@ export default function CatalogDashboard({ user }) {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -69,7 +71,11 @@ export default function CatalogDashboard({ user }) {
           <button className="px-4 py-2 bg-slate-800 text-white rounded-lg border border-white/10 hover:bg-slate-700 transition-colors text-sm font-medium">
             Bulk operations
           </button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium">
+          <button
+            type="button"
+            onClick={() => setIsProductModalOpen(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium"
+          >
             <Plus className="h-4 w-4" /> New product
           </button>
         </div>
@@ -276,6 +282,21 @@ export default function CatalogDashboard({ user }) {
           )}
         </div>
       </Card>
+
+      <ProductFormModal
+        open={isProductModalOpen}
+        onClose={() => setIsProductModalOpen(false)}
+        onCreated={(product) => {
+          setProducts((prev) => [product, ...prev]);
+          setData((prev) => ({
+            ...prev,
+            kpis: {
+              ...(prev?.kpis || {}),
+              totalProducts: (prev?.kpis?.totalProducts || 0) + 1
+            }
+          }));
+        }}
+      />
     </div>
   );
 }

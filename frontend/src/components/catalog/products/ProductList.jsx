@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '../../ui/Card';
-import { Search, Plus, Trash2, Edit, Activity, Filter, Download, Upload, MoreHorizontal } from 'lucide-react';
+import { Search, Plus, Edit, Activity, Filter, Download, Upload, MoreHorizontal, Package } from 'lucide-react';
 import api from '../../../lib/api';
+import ProductFormModal from './ProductFormModal';
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   
   useEffect(() => {
     fetchProducts();
@@ -38,7 +40,11 @@ export default function ProductList() {
           <button className="px-4 py-2 bg-slate-800 text-white rounded-lg border border-white/10 hover:bg-slate-700 transition-colors flex items-center gap-2">
             <Download className="h-4 w-4" /> Export
           </button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsProductModalOpen(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+          >
             <Plus className="h-4 w-4" /> Add Product
           </button>
         </div>
@@ -151,6 +157,12 @@ export default function ProductList() {
           )}
         </div>
       </Card>
+
+      <ProductFormModal
+        open={isProductModalOpen}
+        onClose={() => setIsProductModalOpen(false)}
+        onCreated={(product) => setProducts((prev) => [product, ...prev])}
+      />
     </div>
   );
 }

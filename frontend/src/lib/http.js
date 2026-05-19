@@ -2,8 +2,8 @@
 export function getApiErrorMessage(error, fallback = 'Something went wrong.') {
   const data = error?.response?.data
   if (!data) return error?.message || fallback
-  if (typeof data.message === 'string') return data.message
   if (Array.isArray(data.errors) && data.errors[0]?.msg) return data.errors[0].msg
+  if (typeof data.message === 'string') return data.message
   return fallback
 }
 
