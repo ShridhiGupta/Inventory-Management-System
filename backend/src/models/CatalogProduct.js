@@ -370,8 +370,6 @@ const catalogProductSchema = new mongoose.Schema({
 });
 
 // Indexes for performance
-catalogProductSchema.index({ sku: 1 });
-catalogProductSchema.index({ barcode: 1 });
 catalogProductSchema.index({ category: 1 });
 catalogProductSchema.index({ brand: 1 });
 catalogProductSchema.index({ status: 1 });
@@ -390,7 +388,7 @@ catalogProductSchema.virtual('calculatedMargin').get(function() {
 });
 
 // Pre-save middleware
-catalogProductSchema.pre('save', function(next) {
+catalogProductSchema.pre('save', function() {
   // Calculate margin percentage
   if (this.pricing.sellingPrice && this.pricing.costPrice) {
     this.pricing.margin = this.pricing.sellingPrice - this.pricing.costPrice;
@@ -401,8 +399,6 @@ catalogProductSchema.pre('save', function(next) {
   if (this.inventory.currentStock && this.pricing.costPrice) {
     this.inventory.stockValue = this.inventory.currentStock * this.pricing.costPrice;
   }
-  
-  next();
 });
 
 module.exports = mongoose.model('CatalogProduct', catalogProductSchema);

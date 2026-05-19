@@ -101,7 +101,6 @@ const storeSchema = new mongoose.Schema({
 });
 
 // Indexes for faster queries
-storeSchema.index({ code: 1 });
 storeSchema.index({ isActive: 1 });
 storeSchema.index({ manager: 1 });
 storeSchema.index({ warehouseId: 1 });

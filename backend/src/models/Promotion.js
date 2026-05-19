@@ -91,7 +91,6 @@ const promotionSchema = new mongoose.Schema({
 });
 
 // Indexes for faster queries
-promotionSchema.index({ code: 1 });
 promotionSchema.index({ type: 1 });
 promotionSchema.index({ startDate: 1, endDate: 1 });
 promotionSchema.index({ isActive: 1 });
@@ -131,11 +130,10 @@ promotionSchema.statics.validateCode = function(code, userId) {
 };
 
 // Pre-save middleware to validate dates
-promotionSchema.pre('save', function(next) {
+promotionSchema.pre('save', function() {
   if (this.startDate >= this.endDate) {
-    return next(new Error('End date must be after start date'));
+    throw new Error('End date must be after start date');
   }
-  next();
 });
 
 module.exports = mongoose.model('Promotion', promotionSchema);

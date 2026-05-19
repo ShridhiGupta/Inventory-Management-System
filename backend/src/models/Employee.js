@@ -172,7 +172,6 @@ const employeeSchema = new mongoose.Schema({
 });
 
 // Indexes for faster queries
-employeeSchema.index({ email: 1 });
 employeeSchema.index({ role: 1 });
 employeeSchema.index({ department: 1 });
 employeeSchema.index({ storeId: 1 });
@@ -181,23 +180,20 @@ employeeSchema.index({ vendorId: 1 });
 employeeSchema.index({ isActive: 1 });
 
 // Pre-validate middleware to populate firstName/lastName from fullName
-employeeSchema.pre('validate', function(next) {
+employeeSchema.pre('validate', function() {
   if (this.fullName && (!this.firstName || !this.lastName)) {
     const parts = this.fullName.trim().split(' ');
     this.firstName = parts[0];
     this.lastName = parts.length > 1 ? parts.slice(1).join(' ') : parts[0];
   }
-  next();
 });
 
 // Pre-save middleware to hash password if this is used for authentication
-employeeSchema.pre('save', async function(next) {
-  if (this.isModified('password')) {
-    const bcrypt = require('bcryptjs');
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
-  }
-  next();
+employeeSchema.pre('save', async function() {
+  if (!this.isModified('password')) return;
+  const bcrypt = require('bcryptjs');
+  const salt = await bcrypt.genSalt(12);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 // Method to compare password

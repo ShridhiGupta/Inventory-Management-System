@@ -82,7 +82,6 @@ const productSchema = new mongoose.Schema({
 });
 
 // Indexes for faster queries
-productSchema.index({ sku: 1 });
 productSchema.index({ category: 1 });
 productSchema.index({ vendorId: 1 });
 productSchema.index({ name: 'text', description: 'text', tags: 'text' });

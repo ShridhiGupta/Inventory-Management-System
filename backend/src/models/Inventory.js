@@ -71,10 +71,9 @@ inventorySchema.index({ status: 1 });
 inventorySchema.index({ expiryDate: 1 });
 
 // Pre-save middleware to update available quantity
-inventorySchema.pre('save', function(next) {
+inventorySchema.pre('save', function() {
   this.availableQuantity = this.quantity - this.reservedQuantity;
   this.lastStockUpdate = new Date();
-  next();
 });
 
 // Static method to check low stock

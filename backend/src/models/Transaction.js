@@ -116,7 +116,6 @@ const transactionSchema = new mongoose.Schema({
 });
 
 // Indexes for faster queries
-transactionSchema.index({ transactionNumber: 1 });
 transactionSchema.index({ type: 1 });
 transactionSchema.index({ status: 1 });
 transactionSchema.index({ transactionDate: -1 });
@@ -125,7 +124,7 @@ transactionSchema.index({ fromLocationId: 1 });
 transactionSchema.index({ toLocationId: 1 });
 
 // Pre-save middleware to calculate totals
-transactionSchema.pre('save', function(next) {
+transactionSchema.pre('save', function() {
   // Calculate total amount from items
   this.totalAmount = this.items.reduce((total, item) => {
     return total + (item.quantity * item.unitPrice);
@@ -143,8 +142,6 @@ transactionSchema.pre('save', function(next) {
     const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
     this.transactionNumber = `TRX-${year}${month}${day}-${random}`;
   }
-  
-  next();
 });
 
 module.exports = mongoose.model('Transaction', transactionSchema);
