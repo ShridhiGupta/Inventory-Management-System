@@ -21,6 +21,17 @@ const {
 
 const { authenticate, authorize } = require('../middleware/auth');
 
+// Helper to bind CRUD factory to a sub-router
+const bindCrud = (controller) => {
+  const r = express.Router();
+  r.get('/', authenticate, controller.getAll);
+  r.get('/:id', authenticate, controller.getOne);
+  r.post('/', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), controller.create);
+  r.put('/:id', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), controller.update);
+  r.delete('/:id', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), controller.delete);
+  return r;
+};
+
 // Dashboard
 router.get('/dashboard', authenticate, getCatalogDashboard);
 
@@ -38,17 +49,6 @@ router.get('/products/:id', authenticate, getProduct);
 router.post('/products', authenticate, authorize('SUPER_ADMIN', 'STORE_ADMIN', 'VENDOR_ADMIN'), createProductValidation, createProduct);
 router.put('/products/:id', authenticate, authorize('SUPER_ADMIN', 'STORE_ADMIN', 'VENDOR_ADMIN'), updateProductValidation, updateProduct);
 router.delete('/products/:id', authenticate, authorize('SUPER_ADMIN', 'STORE_ADMIN'), deleteProduct);
-
-// Helper to bind CRUD factory to a sub-router
-const bindCrud = (controller) => {
-  const r = express.Router();
-  r.get('/', authenticate, controller.getAll);
-  r.get('/:id', authenticate, controller.getOne);
-  r.post('/', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), controller.create);
-  r.put('/:id', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), controller.update);
-  r.delete('/:id', authenticate, authorize('SUPER_ADMIN', 'ADMIN'), controller.delete);
-  return r;
-};
 
 router.use('/taxes', bindCrud(extras.TaxController));
 router.use('/charges', bindCrud(extras.ChargeController));

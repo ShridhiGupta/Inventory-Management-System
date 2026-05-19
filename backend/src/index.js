@@ -9,6 +9,8 @@ const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const isProduction = process.env.NODE_ENV === 'production';
+const rateLimitMax = Number(process.env.RATE_LIMIT_MAX) || (isProduction ? 100 : 1000);
 
 // Security middleware
 app.use(helmet());
@@ -20,7 +22,7 @@ app.use(cors({
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: rateLimitMax, // limit each IP to this many requests per windowMs
   message: 'Too many requests from this IP, please try again later.'
 });
 app.use('/api/', limiter);
@@ -46,6 +48,7 @@ app.use('/api/store', require('./routes/store'));
 app.use('/api/transaction', require('./routes/transaction'));
 app.use('/api/employee', require('./routes/employee'));
 app.use('/api/customer', require('./routes/customer'));
+app.use('/api/catalog', require('./routes/catalog'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/promotion', require('./routes/promotion'));
 
