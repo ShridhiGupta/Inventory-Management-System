@@ -2,6 +2,8 @@
 
 A comprehensive enterprise-grade Inventory, Warehouse, Vendor, Store, Billing, and Order Management System built with the MERN stack.
 
+**🎥 [Watch the Project Demo Video on YouTube](https://youtu.be/jjyVSLsu7Iw)**
+
 ## Features
 
 ### Core Modules
