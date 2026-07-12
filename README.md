@@ -315,13 +315,6 @@ npm test
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Support
-
-For support, please contact:
-- Email: support@inventorypro.com
-- Documentation: [docs.inventorypro.com](https://docs.inventorypro.com)
-- Issues: [GitHub Issues](https://github.com/your-repo/issues)
-
 ## Acknowledgments
 
 - Built with modern web technologies
