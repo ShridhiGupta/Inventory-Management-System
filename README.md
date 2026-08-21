@@ -321,4 +321,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Inspired by leading ERP systems
 - Designed for scalability and performance
 - Focused on user experience and accessibility
-
